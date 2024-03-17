@@ -1,0 +1,72 @@
+#include<LPC21XX.H>
+#include "delayheader.h"
+#include "lcd4bit.h"
+#include "keypad.h"
+#include "uart.h"
+#include "i2c.h"
+#include "eeprom.h"
+#define ref_pass "12345678"
+
+int main()
+{
+	unsigned char password[8],ref_pass[8],sms[50],usr_otp[4];
+	unsigned int i,otp,j=0;
+	start:
+	LCD_INIT();
+	uart_init();
+	i2c_init();
+	
+	EEPROM_PAGE_WRITE(EEPROM_SA,0X00,PASSWORD,8);
+	
+	LCD_STR("MULTI SECUTIRY DOOR");
+	delay_millisecond(1000);
+	LCD_STR("ENTER THE PASSWORD");
+	LCD_CMD(0X0C);
+	
+	for(i=0;i<8;i++)
+	{
+		p[i] = uart_rx();
+		LCD_DATA("*");	
+	}
+	ref_pass = EEPROM_PAGE_READ(EEPROM_SA,0X00,)
+	
+	if(password == ref_pass)
+	{
+		otp = rand();
+		
+		gsm_sms(number,sms);
+		OTP_FUN:
+		LCD_INIT();
+		LCD_STR("ENTER THE OTP");
+		LCD_CMD(0X0C);
+			for(i=0;i<4;i++)
+			{
+			usr_otp[i]=uart_rx();
+			LCD_DATA(usr_otp[i]);
+			}
+				if(otp = usr_otp)
+				{
+				LCD_INIT();
+				LCD_STR("DOOR IS OPEN")
+				}
+				else
+				{
+					LCD_INIT();
+					LCD_STR("PASSWORD IS WRONG")
+					if(j<3)
+					{
+					j++;	
+					goto OTP_FUN;
+					}
+					else
+					{
+						gms_sms(number,"someone try to open door");
+						delay_seconds(10);
+						j=0;
+						goto start;
+					}
+						
+				}
+			
+	}
+}
